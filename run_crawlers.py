@@ -43,3 +43,7 @@ def go(db_name=DATABASE_FILENAME):
 
     conn.commit()
     conn.close()
+
+
+if __name__ == "__main__":
+    go()

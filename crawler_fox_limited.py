@@ -138,9 +138,11 @@ def crawl_transcripts(starting_url, all_show_transcripts, db_cursor,
         db_cursor.execute('INSERT INTO episode VALUES(?, ?, ?, ?)',
             (episode_id_start, headline, airtime, title))
 
-        # https://stackoverflow.com/questions/54162988/how-to-find-a-tag-without-specific-attribute-using-beautifulsoup
+        # https://stackoverflow.com/questions/54162988/how-to-find-a-tag-
+        # without-specific-attribute-using-beautifulsoup
         transcript_raw_text = transcript_page_soup.find_all('p',
-            class_='speakable') + transcript_page_soup.find_all('p', class_=None)
+            class_='speakable') + transcript_page_soup.find_all('p',
+                class_=None)
 
         transcript_text = crawler_util.join_text_chunks(transcript_raw_text)
 
@@ -149,7 +151,8 @@ def crawl_transcripts(starting_url, all_show_transcripts, db_cursor,
 
         speaker_id_start, phrase_id_start = crawler_util.\
             crawl_transcript(transcript_text, begin_flag, end_flag,
-                episode_id_start, speaker_id_start, phrase_id_start, db_cursor)
+                episode_id_start, speaker_id_start, phrase_id_start,
+                db_cursor)
 
         db_connection.commit()
         episode_id_start += 1
@@ -200,9 +203,10 @@ def crawl_show(starting_url, transcript_link, db_cursor,
     most_recent_year = LIMIT_YEAR
     while most_recent_year >= LIMIT_YEAR:
         most_recent_year, index_start, episode_id_start, speaker_id_start, \
-            phrase_id_start, within_date_range = crawl_transcripts(starting_url,
-            all_show_transcripts, db_cursor, db_connection,
-            title, episode_id_start, speaker_id_start, phrase_id_start, index_start)
+            phrase_id_start, within_date_range = crawl_transcripts(\
+            starting_url, all_show_transcripts, db_cursor, db_connection,
+            title, episode_id_start, speaker_id_start, phrase_id_start,
+            index_start)
 
         if not within_date_range:
             break

@@ -187,7 +187,8 @@ def crawl_show(starting_url, transcript_link, db_cursor,
         most_recent_year, index_start, episode_id_start, speaker_id_start, \
             phrase_id_start = crawl_transcripts(starting_url,
             all_show_transcripts, db_cursor, db_connection,
-            title, episode_id_start, speaker_id_start, phrase_id_start, index_start)
+            title, episode_id_start, speaker_id_start, phrase_id_start,
+            index_start)
 
         # For shows that have no actual transcripts in first 10, skip show
         if most_recent_year is None:

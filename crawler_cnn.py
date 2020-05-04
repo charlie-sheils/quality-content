@@ -136,10 +136,13 @@ def crawl_show(starting_url, transcript_link, db_cursor,
             transcript_request = crawler_util.get_request(link)
             if transcript_request is None:
                 continue
-            most_recent_year, episode_id_start, speaker_id_start, phrase_id_start = crawl_transcript(link, db_cursor, db_connection, title, headline,
-                episode_id_start, speaker_id_start, phrase_id_start)
+            most_recent_year, episode_id_start, speaker_id_start, \
+                phrase_id_start = crawl_transcript(link, db_cursor,
+                    db_connection, title, headline, episode_id_start,
+                    speaker_id_start, phrase_id_start)
 
-        transcripts_by_day = transcripts_by_day.find_next_sibling('div', class_='cnnSectBulletItems')
+        transcripts_by_day = transcripts_by_day.find_next_sibling('div', \
+            class_='cnnSectBulletItems')
         transcripts_raw_links = transcripts_by_day.find_all('a', href=True)
 
     if episode_id_start > episode_id_init:

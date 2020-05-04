@@ -17,7 +17,9 @@ MONTH_DICT = dict((v,k) for k,v in enumerate(calendar.month_name))
 def get_msnbc_transcript_date(article_soup):
     airtime_raw = article_soup.find('meta', property="nv:date").get('content')
     # print("raw airtime is", airtime_raw)
-    airtime_obj = re.search('([0-9]{2})/([0-9]{2})/([0-9]{4}) ([0-9]{2}:[0-9]{2}:[0-9]{2})', airtime_raw)
+    airtime_obj = re.search(\
+        '([0-9]{2})/([0-9]{2})/([0-9]{4}) ([0-9]{2}:[0-9]{2}:[0-9]{2})', \
+        airtime_raw)
     year = airtime_obj.group(3)
 
     if int(year) != LIMIT_YEAR:
@@ -47,12 +49,14 @@ def crawl_msnbc_transcript(link, db_cursor, db_connection, title,
     if year != LIMIT_YEAR:
         return episode_id_start, speaker_id_start, phrase_id_start
 
-    headline_raw = article_soup.find('meta', property="nv:title").get('content')
+    headline_raw = article_soup.find('meta', \
+        property="nv:title").get('content')
     headline = re.search("(.*?) TRANSCRIPT", headline_raw).group(1)
     db_cursor.execute('INSERT INTO episode VALUES(?, ?, ?, ?)',
         (episode_id_start, headline, airtime, title))
 
-    transcript_raw_text = article_soup.find('div', itemprop="articleBody").find_all('p')
+    transcript_raw_text = article_soup.find('div', \
+        itemprop="articleBody").find_all('p')
     transcript_text = crawler_util.join_text_chunks(transcript_raw_text)
 
     begin_flag = ".*"
@@ -100,9 +104,9 @@ def crawl_show(starting_url, transcripts_link, db_cursor,
         # Crawl transcript
         link = crawler_util.convert_if_relative_url(\
                 starting_url, show_day.find('a').get('href'))
-        episode_id_start, speaker_id_start, phrase_id_start = crawl_msnbc_transcript(\
-            link, db_cursor, db_connection, title, episode_id_start,
-            speaker_id_start, phrase_id_start)
+        episode_id_start, speaker_id_start, phrase_id_start = \
+            crawl_msnbc_transcript(link, db_cursor, db_connection, title, \
+            episode_id_start, speaker_id_start, phrase_id_start)
 
         show_day = show_day.find_next('div', class_='transcript-item')
         if show_day is None:

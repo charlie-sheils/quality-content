@@ -71,7 +71,9 @@ def crawl_transcript(link, db_cursor, db_connection, title, headline,
         return year, episode_id_start, speaker_id_start, phrase_id_start, False
     assert (py_date <= MAX_DATE and py_date >= MIN_DATE)
 
-    if (headline == "White House Coronavirus Update; Federal Reserve Cuts Rate To Zero; Coronavirus Testing Available To All 50 States. Aired 5-6p ET" and
+    if (headline == "White House Coronavirus Update; Federal Reserve Cuts" + \
+                "Rate To Zero; Coronavirus Testing Available To All 50" + \
+                "States. Aired 5-6p ET" and
         airtime == "2020-03-15 17:00"):
         return year, episode_id_start, speaker_id_start, phrase_id_start, True
 
@@ -141,19 +143,21 @@ def crawl_show(starting_url, transcript_link, db_cursor,
             transcript_request = crawler_util.get_request(link)
             if transcript_request is None:
                 continue
-            # most_recent_year, episode_id_start, speaker_id_start, phrase_id_start = crawl_transcript(link, db_cursor, db_connection, title, headline,
-            #     episode_id_start, speaker_id_start, phrase_id_start)
-            most_recent_year, episode_id_start, speaker_id_start, phrase_id_start, \
-                within_date_range = crawl_transcript(link, db_cursor, db_connection, title, headline,
-                episode_id_start, speaker_id_start, phrase_id_start)
+
+            most_recent_year, episode_id_start, speaker_id_start, \
+                phrase_id_start, within_date_range = crawl_transcript(link,
+                    db_cursor, db_connection, title, headline,
+                    episode_id_start, speaker_id_start, phrase_id_start)
 
             if not within_date_range:
                 break
+
         if not within_date_range:
             print("HAVE TO BREAK A SECOND TIME")
             break
 
-        transcripts_by_day = transcripts_by_day.find_next_sibling('div', class_='cnnSectBulletItems')
+        transcripts_by_day = transcripts_by_day.find_next_sibling('div',
+            class_='cnnSectBulletItems')
         transcripts_raw_links = transcripts_by_day.find_all('a', href=True)
 
     if episode_id_start > episode_id_init:
@@ -177,7 +181,8 @@ def go(db_cursor, db_connection, speaker_id_start=0, episode_id_start=0,
     starting_request = crawler_util.get_request(starting_url)
     starting_text = starting_request.text
     starting_soup = bs4.BeautifulSoup(starting_text, "html5lib")
-    show_subsection = starting_soup.find_all('span', class_='cnnSectBulletItems')
+    show_subsection = starting_soup.find_all('span',
+        class_='cnnSectBulletItems')
 
     show_dict = {}
     for section in show_subsection[0:1]:
